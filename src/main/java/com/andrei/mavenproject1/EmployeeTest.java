@@ -20,9 +20,11 @@ public class EmployeeTest {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EmployeeService");
         em = emf.createEntityManager();
 
-        createEmployee(1, "Saint", "Peter", "Engineering");
-        createEmployee(2, "Jack", " Dorsey", "Imaginea");
-        createEmployee(3, "Sam", "Fox", "Imaginea");
+        createEmployee(5, "Saint", "Peter", "Engineering");
+        createEmployee(6, "Jack", " Dorsey", "Imaginea");
+        createEmployee(7, "Sam", "Fox", "Imaginea");
+        
+        emf.close();
 
     }
 
