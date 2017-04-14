@@ -6,10 +6,14 @@
 package com.andrei.mavenproject1;
 
 
+import com.andrei.entities.Category;
 import com.andrei.entities.Employee;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 public class EmployeeTest {
 
@@ -17,14 +21,14 @@ public class EmployeeTest {
 
     public static void main(String[] args) {
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("EmployeeService");
+       /*EntityManagerFactory emf = Persistence.createEntityManagerFactory("EmployeeService");
         em = emf.createEntityManager();
-
         createEmployee(5, "Saint", "Peter", "Engineering");
         createEmployee(6, "Jack", " Dorsey", "Imaginea");
         createEmployee(7, "Sam", "Fox", "Imaginea");
+        emf.close();*/
         
-        emf.close();
+        getAllCategories();
 
     }
 
@@ -33,5 +37,20 @@ public class EmployeeTest {
         Employee emp = new Employee(id, firstName, lastName, dept);
         em.persist(emp);
         em.getTransaction().commit();
+    }
+      
+    static void getAllCategories(){
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        Query q = session.createQuery("From Category ");
+        List<Category> resultList = q.list();
+        System.out.println("num of categories:" + resultList.size());
+        for (Category next : resultList) {
+            System.out.println("next category: " + next);
+        }
+        
+        session.getTransaction().commit();
+        session.close();
+        
     }
 }

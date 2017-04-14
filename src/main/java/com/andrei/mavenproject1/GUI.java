@@ -5,18 +5,33 @@
  */
 package com.andrei.mavenproject1;
 
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 /**
  *
  * @author acalbaza
  */
-public class GUI extends javax.swing.JFrame {
+public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
     /**
      * Creates new form GUI
      */
     public GUI() {
         initComponents();
-    }
+        treeCat.addTreeSelectionListener(this);
+        
+        
+        
+        /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
+
+        DefaultTreeModel model = (DefaultTreeModel)treeCat.getModel();
+        model.setRoot(top);
+        createNodes(top);*/
+    }   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,6 +47,7 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        treeCat.setModel(new CategoryModel());
         jScrollPane1.setViewportView(treeCat);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -40,14 +56,13 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(366, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(306, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -88,9 +103,42 @@ public class GUI extends javax.swing.JFrame {
             }
         });
     }
+    
+     private void createNodes(DefaultMutableTreeNode top) {
+        DefaultMutableTreeNode category = null;
+        DefaultMutableTreeNode book = null;
+ 
+        category = new DefaultMutableTreeNode("Books for Java Programmers");
+        top.add(category);
+ 
+        //original Tutorial
+        book = new DefaultMutableTreeNode("The Java Tutorial: A Short Course on the Basics");
+        category.add(book);
+ 
+        //Tutorial Continued
 
+        category.add(book);
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     public javax.swing.JTree treeCat;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void valueChanged(TreeSelectionEvent e) {
+         DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                           treeCat.getLastSelectedPathComponent();
+ 
+        if (node == null) return;
+ 
+        Object nodeInfo = node.getUserObject();
+        if (node.isLeaf()) {
+            System.out.print("leaf");
+            
+        } else {
+            System.out.print("not leaf");
+        }
+    }
 }

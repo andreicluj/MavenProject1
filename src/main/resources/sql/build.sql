@@ -3,7 +3,7 @@ drop table if exists category ;
 create table category (
     id          integer not null,
     parent_id   integer,
-    code        char(5) CONSTRAINT firstkey PRIMARY KEY,
+    code        varchar(5) CONSTRAINT firstkey PRIMARY KEY,
     title       varchar(40) NOT NULL,
     date_prod   date,
     description varchar(100)
