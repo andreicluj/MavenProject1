@@ -6,17 +6,24 @@
 package com.andrei.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
@@ -34,6 +41,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Category.findByDateProd", query = "SELECT c FROM Category c WHERE c.dateProd = :dateProd"),
     @NamedQuery(name = "Category.findByDescription", query = "SELECT c FROM Category c WHERE c.description = :description")})
 public class Category implements Serializable {
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "categoryId" , targetEntity = Book.class)
+    private Collection<Book> bookCollection;
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
@@ -138,6 +148,15 @@ public class Category implements Serializable {
     @Override
     public String toString() {
         return title;
+    }
+
+    @XmlTransient
+    public Collection<Book> getBookCollection() {
+        return bookCollection;
+    }
+
+    public void setBooksCollection(Collection<Book> booksCollection) {
+        this.bookCollection = booksCollection;
     }
     
 }

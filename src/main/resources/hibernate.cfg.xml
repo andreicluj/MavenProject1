@@ -22,6 +22,8 @@
  
      <mapping class="com.andrei.entities.Employee" />
      <mapping class="com.andrei.entities.Category" />
+     <mapping class="com.andrei.entities.Book" />
+
  
 </session-factory>
 </hibernate-configuration>

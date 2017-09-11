@@ -5,16 +5,24 @@
  */
 package com.andrei.mavenproject1;
 
+import com.andrei.entities.Book;
+import com.andrei.entities.Category;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
  * @author acalbaza
  */
+
 public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
     /**
@@ -25,9 +33,7 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         treeCat.addTreeSelectionListener(this);
         
         
-        
-        /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
-
+       /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
         DefaultTreeModel model = (DefaultTreeModel)treeCat.getModel();
         model.setRoot(top);
         createNodes(top);*/
@@ -134,6 +140,33 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         if (node == null) return;
  
         Object nodeInfo = node.getUserObject();
+        
+         //Session session = HibernateUtil.getSessionFactory().openSession();
+        if (nodeInfo != null) {
+            Category c = (Category) nodeInfo;
+            Collection<Book> books = c.getBookCollection();
+            
+            for (Iterator it=books.iterator();it.hasNext();){
+                Book b = (Book)it.next();
+                System.out.println(b.getTitle());
+            }
+            System.out.println(c.getDescription());
+            
+            int catId = c.getId();
+
+            Session session = HibernateUtil.getSessionFactory().openSession();
+
+            session.beginTransaction();
+            Query q = session.createQuery("From Book where categoryId = :catId");
+
+            q.setParameter("catId", c);
+            List<Book> resultList = q.list();
+            session.close();
+
+        }
+        
+        
+        
         if (node.isLeaf()) {
             System.out.print("leaf");
             

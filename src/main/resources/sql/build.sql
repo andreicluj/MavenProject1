@@ -1,7 +1,18 @@
 
+drop table if exists employee ;
+create table employee (
+    id              integer not null,
+    firstName       varchar(40) NOT NULL,
+    lastName        varchar(40) NOT NULL,
+    dept            varchar(40) NOT NULL
+
+);
+
+
+
 drop table if exists category ;
 create table category (
-    id          integer not null,
+    id          integer not null unique,
     parent_id   integer,
     code        varchar(5) CONSTRAINT firstkey PRIMARY KEY,
     title       varchar(40) NOT NULL,
@@ -20,4 +31,17 @@ insert into category(id, parent_id,code,title,date_prod,description) values(5,2,
 insert into category(id, parent_id,code,title,date_prod,description) values((SELECT MAX(ID) + 1 from category),(select id from category where code = 'GEO'),'G1' , 'Plane geometry', CURRENT_DATE, 'Plane geometry');
 insert into category(id, parent_id,code,title,date_prod,description) values((SELECT MAX(ID) + 1 from category),(select id from category where code = 'GEO'),'G2' , 'Space geometry', CURRENT_DATE, 'Space geometry');
 insert into category(id, parent_id,code,title,date_prod,description) values((SELECT MAX(ID) + 1 from category),(select id from category where code = 'GEO'),'G3' , 'Hilbert geometry', CURRENT_DATE, 'Hilbert geometry');
+insert into category(id, parent_id,code,title,date_prod,description) values((SELECT MAX(ID) + 1 from category),(select id from category where code = 'G2'),'G4' , '3D geometry', CURRENT_DATE, '3D geometry');
 
+drop table if exists  books;
+
+CREATE TABLE books (
+    id                  integer not null CONSTRAINT primarykey PRIMARY KEY,
+    title               varchar(40) NOT NULL,
+    content             text ,
+    date_prod           date,
+    category_id         integer references category(id)
+);
+
+
+insert into books(id,title,content,date_prod,category_id) values(1,'B1' , 'B1 content', to_date('1/1/2017','DD/MM/YYYY'),2);

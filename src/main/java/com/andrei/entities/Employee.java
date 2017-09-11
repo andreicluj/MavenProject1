@@ -16,10 +16,10 @@ public class Employee {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "fistName")
+    @Column(name = "firstname")
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "lastname")
     private String lastName;
 
     @Column(name = "dept")
