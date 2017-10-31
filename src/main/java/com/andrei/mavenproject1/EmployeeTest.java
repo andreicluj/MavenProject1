@@ -8,6 +8,8 @@ package com.andrei.mavenproject1;
 
 import com.andrei.entities.Category;
 import com.andrei.entities.Employee;
+import com.andrei.entities.Scheduledoutgoingmessage;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,7 +30,12 @@ public class EmployeeTest {
         createEmployee(7, "Sam", "Fox", "Imaginea");
         emf.close();*/
         
-        getAllCategories();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("uuService");
+        em = emf.createEntityManager();
+        createOutgoingMessage();
+        emf.close();
+       
+        //getAllCategories();
 
     }
 
@@ -38,6 +45,17 @@ public class EmployeeTest {
         em.persist(emp);
         em.getTransaction().commit();
     }
+    
+    
+    private static void createOutgoingMessage() {
+        em.getTransaction().begin();
+        Scheduledoutgoingmessage som =   new Scheduledoutgoingmessage( new Date(), (short)1, 1) ;     
+        som.setOriginalmessage("original message");
+        em.persist(som);
+    
+        em.getTransaction().commit();
+    }
+    
       
     static void getAllCategories(){
         Session session = HibernateUtil.getSessionFactory().openSession();

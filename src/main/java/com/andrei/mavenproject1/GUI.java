@@ -7,12 +7,28 @@ package com.andrei.mavenproject1;
 
 import com.andrei.entities.Book;
 import com.andrei.entities.Category;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.web.WebView;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.hibernate.Query;
@@ -25,12 +41,57 @@ import org.hibernate.Session;
 
 public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
-    /**
-     * Creates new form GUI
-     */
+    
+    JFXPanel fxPanel;
+    static String htmlStr = "";
+    DefaultTableModel dtm;
+    
     public GUI() {
-        initComponents();
+        
+       
+        try{
+            htmlStr = readFile("D:\\BUGS\\mathjax.html");
+        }catch(IOException ioexc){
+            ioexc.printStackTrace();
+        }
+      
+        initComponents1();
         treeCat.addTreeSelectionListener(this);
+        
+          //jfxPanel.setBackground(Color.red);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                initFX(fxPanel);
+            }
+       });
+        
+        setVisible(true);
+        setSize(1100,800);
+        
+        dtm = new javax.swing.table.DefaultTableModel(
+                new Object[][]{
+                    {null, null, null},
+                    {null, null, null},
+                    {null, null, null},
+                    {null, null, null}
+                },
+                new String[]{
+                    "ID", "Title", "Description"
+                }
+        ) {
+            Class[] types = new Class[]{
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
+        };
+        tbl.setModel(dtm);
+        
+       
+        
         
         
        /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
@@ -50,11 +111,46 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         treeCat = new javax.swing.JTree();
+        pnlMath = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbl = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         treeCat.setModel(new CategoryModel());
         jScrollPane1.setViewportView(treeCat);
+
+        javax.swing.GroupLayout pnlMathLayout = new javax.swing.GroupLayout(pnlMath);
+        pnlMath.setLayout(pnlMathLayout);
+        pnlMathLayout.setHorizontalGroup(
+            pnlMathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 510, Short.MAX_VALUE)
+        );
+        pnlMathLayout.setVerticalGroup(
+            pnlMathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 321, Short.MAX_VALUE)
+        );
+
+        tbl.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "ID", "Title", "Description"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tbl);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -63,21 +159,146 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(306, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlMath, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pnlMath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+     private void initComponents1() {
+
+        jScrollPane1 = new javax.swing.JScrollPane();
+        treeCat = new javax.swing.JTree();
+        fxPanel = new javafx.embed.swing.JFXPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tbl = new javax.swing.JTable();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        treeCat.setModel(new CategoryModel());
+        jScrollPane1.setViewportView(treeCat);
+
+        javax.swing.GroupLayout pnlMathLayout = new javax.swing.GroupLayout(fxPanel);
+        fxPanel.setLayout(pnlMathLayout);
+        pnlMathLayout.setHorizontalGroup(
+                pnlMathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 510, Short.MAX_VALUE)
+        );
+        pnlMathLayout.setVerticalGroup(
+                pnlMathLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 321, Short.MAX_VALUE)
+        );
+
+       
+        jScrollPane2.setViewportView(tbl);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(fxPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jScrollPane2))
+                                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(fxPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addContainerGap())
+        );
+
+        pack();
+    }
+
+    
+    
     /**
      * @param args the command line arguments
      */
+    private static void initFX(JFXPanel fxPanel) {
+        // This method is invoked on the JavaFX thread
+        Scene scene = createScene();
+        WebView webView = new WebView();
+       // webView.getEngine().loadContent( "<html> Hello World!" );
+        //webView.getEngine().load( "https://www.mathjax.org/" );
+       // URL myURL ;
+        //try {
+       //     myURL = new URL("file:///D://BUGS//mathjax.html");
+       // }catch(MalformedURLException muexc){
+       //     muexc.printStackTrace();
+        //}
+        //webView.loadDataWithBaseURL(myURL,htmlStr,"text/html","utf-8", null);
+        File file = new File("/data/data/D://BUGS//mathjax.html");
+        webView.getEngine().loadContent(htmlStr);  //.loadUrl("file:///" + file);
+        
+        fxPanel.setScene( new Scene( webView ) );
+        
+        //fxPanel.setScene(scene);
+    }
+    private static Scene createScene() {
+        Group  root  =  new  Group();
+        Scene  scene  =  new  Scene(root, javafx.scene.paint.Color.ALICEBLUE);
+        Text  text  =  new  Text();
+        
+        text.setX(40);
+        text.setY(100);
+        text.setFont(new Font(25));
+        text.setText("Welcome JavaFX!");
+
+        root.getChildren().add(text);
+
+        return (scene);
+    }
+    
+    
+    
+    
+    private String readFile(String file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader (file));
+        String         line = null;
+        StringBuilder  stringBuilder = new StringBuilder();
+        String         ls = System.getProperty("line.separator");
+
+        try {
+            while((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
+
+            return stringBuilder.toString();
+        } finally {
+            reader.close();
+        }
+    }
+    
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -105,7 +326,7 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUI().setVisible(true);
+                new GUI();
             }
         });
     }
@@ -129,6 +350,9 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel pnlMath;
+    private javax.swing.JTable tbl;
     public javax.swing.JTree treeCat;
     // End of variables declaration//GEN-END:variables
 
@@ -137,7 +361,9 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
          DefaultMutableTreeNode node = (DefaultMutableTreeNode)
                            treeCat.getLastSelectedPathComponent();
  
-        if (node == null) return;
+        
+         
+         if (node == null) return;
  
         Object nodeInfo = node.getUserObject();
         
@@ -145,10 +371,14 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         if (nodeInfo != null) {
             Category c = (Category) nodeInfo;
             Collection<Book> books = c.getBookCollection();
-            
+            dtm.getDataVector().clear();
+            dtm.fireTableDataChanged();
             for (Iterator it=books.iterator();it.hasNext();){
                 Book b = (Book)it.next();
                 System.out.println(b.getTitle());
+                
+                dtm.addRow(new Object[]{1,b.getTitle(),b.getContent()});
+                
             }
             System.out.println(c.getDescription());
             

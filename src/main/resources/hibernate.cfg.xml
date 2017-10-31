@@ -23,6 +23,8 @@
      <mapping class="com.andrei.entities.Employee" />
      <mapping class="com.andrei.entities.Category" />
      <mapping class="com.andrei.entities.Book" />
+    <!-- <mapping class="com.andrei.entities.Scheduledoutgoingmessage" /> -->
+
 
  
 </session-factory>

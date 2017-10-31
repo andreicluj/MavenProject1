@@ -45,3 +45,5 @@ CREATE TABLE books (
 
 
 insert into books(id,title,content,date_prod,category_id) values(1,'B1' , 'B1 content', to_date('1/1/2017','DD/MM/YYYY'),2);
+insert into books(id,title,content,date_prod,category_id) values(2,'B2' , 'B2 content', to_date('2/1/2017','DD/MM/YYYY'),2);
+insert into books(id,title,content,date_prod,category_id) values(3,'B3' , 'B3 content', to_date('3/1/2017','DD/MM/YYYY'),2);
