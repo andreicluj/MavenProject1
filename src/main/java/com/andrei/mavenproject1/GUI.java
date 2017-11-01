@@ -26,9 +26,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import org.hibernate.Query;
@@ -38,37 +44,34 @@ import org.hibernate.Session;
  *
  * @author acalbaza
  */
+public class GUI extends javax.swing.JFrame implements TreeSelectionListener, ListSelectionListener {
 
-public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
-
-    
     JFXPanel fxPanel;
     static String htmlStr = "";
     DefaultTableModel dtm;
-    
+
     public GUI() {
-        
-       
-        try{
+
+        try {
             htmlStr = readFile("D:\\BUGS\\mathjax.html");
-        }catch(IOException ioexc){
+        } catch (IOException ioexc) {
             ioexc.printStackTrace();
         }
-      
+
         initComponents1();
         treeCat.addTreeSelectionListener(this);
-        
-          //jfxPanel.setBackground(Color.red);
+
+        //jfxPanel.setBackground(Color.red);
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 initFX(fxPanel);
             }
-       });
-        
+        });
+
         setVisible(true);
-        setSize(1100,800);
-        
+        setSize(1100, 800);
+
         dtm = new javax.swing.table.DefaultTableModel(
                 new Object[][]{
                     {null, null, null},
@@ -89,16 +92,17 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
             }
         };
         tbl.setModel(dtm);
-        
-       
-        
-        
-        
-       /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
+        tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        //When selection changes, provide user with row numbers for
+        //both view and model.
+        tbl.getSelectionModel().addListSelectionListener(this);
+
+        /*DefaultMutableTreeNode top =  new DefaultMutableTreeNode("The Java Series");
         DefaultTreeModel model = (DefaultTreeModel)treeCat.getModel();
         model.setRoot(top);
         createNodes(top);*/
-    }   
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -180,16 +184,13 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
-    
-     private void initComponents1() {
+    private void initComponents1() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         treeCat = new javax.swing.JTree();
         fxPanel = new javafx.embed.swing.JFXPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbl = new javax.swing.JTable();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         treeCat.setModel(new CategoryModel());
@@ -206,7 +207,6 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
                         .addGap(0, 321, Short.MAX_VALUE)
         );
 
-       
         jScrollPane2.setViewportView(tbl);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -237,8 +237,6 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         pack();
     }
 
-    
-    
     /**
      * @param args the command line arguments
      */
@@ -246,27 +244,28 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
         // This method is invoked on the JavaFX thread
         Scene scene = createScene();
         WebView webView = new WebView();
-       // webView.getEngine().loadContent( "<html> Hello World!" );
+        // webView.getEngine().loadContent( "<html> Hello World!" );
         //webView.getEngine().load( "https://www.mathjax.org/" );
-       // URL myURL ;
+        // URL myURL ;
         //try {
-       //     myURL = new URL("file:///D://BUGS//mathjax.html");
-       // }catch(MalformedURLException muexc){
-       //     muexc.printStackTrace();
+        //     myURL = new URL("file:///D://BUGS//mathjax.html");
+        // }catch(MalformedURLException muexc){
+        //     muexc.printStackTrace();
         //}
         //webView.loadDataWithBaseURL(myURL,htmlStr,"text/html","utf-8", null);
         File file = new File("/data/data/D://BUGS//mathjax.html");
         webView.getEngine().loadContent(htmlStr);  //.loadUrl("file:///" + file);
-        
-        fxPanel.setScene( new Scene( webView ) );
-        
+
+        fxPanel.setScene(new Scene(webView));
+
         //fxPanel.setScene(scene);
     }
+
     private static Scene createScene() {
-        Group  root  =  new  Group();
-        Scene  scene  =  new  Scene(root, javafx.scene.paint.Color.ALICEBLUE);
-        Text  text  =  new  Text();
-        
+        Group root = new Group();
+        Scene scene = new Scene(root, javafx.scene.paint.Color.ALICEBLUE);
+        Text text = new Text();
+
         text.setX(40);
         text.setY(100);
         text.setFont(new Font(25));
@@ -276,18 +275,15 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
         return (scene);
     }
-    
-    
-    
-    
+
     private String readFile(String file) throws IOException {
-        BufferedReader reader = new BufferedReader(new FileReader (file));
-        String         line = null;
-        StringBuilder  stringBuilder = new StringBuilder();
-        String         ls = System.getProperty("line.separator");
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
 
         try {
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
                 stringBuilder.append(ls);
             }
@@ -297,8 +293,7 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
             reader.close();
         }
     }
-    
-    
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -330,24 +325,23 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
             }
         });
     }
-    
-     private void createNodes(DefaultMutableTreeNode top) {
+
+    private void createNodes(DefaultMutableTreeNode top) {
         DefaultMutableTreeNode category = null;
         DefaultMutableTreeNode book = null;
- 
+
         category = new DefaultMutableTreeNode("Books for Java Programmers");
         top.add(category);
- 
+
         //original Tutorial
         book = new DefaultMutableTreeNode("The Java Tutorial: A Short Course on the Basics");
         category.add(book);
- 
-        //Tutorial Continued
 
+        //Tutorial Continued
         category.add(book);
     }
-    
-    
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -358,30 +352,29 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
 
     @Override
     public void valueChanged(TreeSelectionEvent e) {
-         DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                           treeCat.getLastSelectedPathComponent();
- 
-        
-         
-         if (node == null) return;
- 
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeCat.getLastSelectedPathComponent();
+
+        if (node == null) {
+            return;
+        }
+
         Object nodeInfo = node.getUserObject();
-        
-         //Session session = HibernateUtil.getSessionFactory().openSession();
+
+        //Session session = HibernateUtil.getSessionFactory().openSession();
         if (nodeInfo != null) {
             Category c = (Category) nodeInfo;
             Collection<Book> books = c.getBookCollection();
             dtm.getDataVector().clear();
             dtm.fireTableDataChanged();
-            for (Iterator it=books.iterator();it.hasNext();){
-                Book b = (Book)it.next();
+            for (Iterator it = books.iterator(); it.hasNext();) {
+                Book b = (Book) it.next();
                 System.out.println(b.getTitle());
-                
-                dtm.addRow(new Object[]{1,b.getTitle(),b.getContent()});
-                
+
+                dtm.addRow(new Object[]{b.getId(), b.getTitle(), b.getContent()});
+
             }
             System.out.println(c.getDescription());
-            
+
             int catId = c.getId();
 
             Session session = HibernateUtil.getSessionFactory().openSession();
@@ -394,14 +387,37 @@ public class GUI extends javax.swing.JFrame implements TreeSelectionListener {
             session.close();
 
         }
-        
-        
-        
+
         if (node.isLeaf()) {
             System.out.print("leaf");
-            
+
         } else {
             System.out.print("not leaf");
         }
     }
+
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        int viewRow = tbl.getSelectedRow();
+        int id = (int)tbl.getModel().getValueAt(viewRow, 0);
+        
+        htmlStr= (String)tbl.getModel().getValueAt(viewRow, 2);
+        
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                initFX(fxPanel);
+            }
+        });
+
+        System.out.println(id);
+
+        if (viewRow < 0) {
+            //Selection got filtered away.
+        } else {
+            int modelRow = tbl.convertRowIndexToModel(viewRow);
+
+        }
+    }
+
 }
